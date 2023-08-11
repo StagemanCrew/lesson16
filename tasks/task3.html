@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>task-3</title>
+</head>
+<body>
+    <h4>Об’єкт “Фірма” (використати члени-класи) <br>
+        ----- поля ----- <br>
+        назва фірми; <br>
+        дата заснування (рік, місяць); <br>
+        послуги (назва послуги, вартість, термін виконання); <br>
+        адреси філіалів (країна, місто, вулиця, номер будинку); <br>
+        ----- методи ----- <br>
+        визначення кількості років існування фірми; <br>
+        виведення всіх філіалів фірми у вказаному місті; <br>
+        виведення на екран послуг, що можуть бути виконані за вказану суму грошей та вказаний термін часу;</h4>
+
+    <script>
+
+        class Service {
+            constructor(name, cost, duration) {
+                this.name = name
+                this.cost = cost
+                this.duration = duration
+            }
+
+            toString() {
+                return `${this.name}, Вартість: ${this.cost}$, Тривалість: ${this.duration} днів`
+            }
+        }
+
+        class Address {
+            constructor(country, city, street, houseNumber) {
+                this.country = country
+                this.city = city
+                this.street = street
+                this.houseNumber = houseNumber
+            }
+
+            toString() {
+                return `Країна: ${this.country}, Місто: ${this.city}, Адреса: ${this.street} ${this.houseNumber}`
+            }
+        }
+
+        class Firm {
+            constructor(name, foundationYear, foundationMonth) {
+                this.name = name
+                this.foundationYear = foundationYear
+                this.foundationMonth = foundationMonth
+                this.services = []
+                this.branches = []
+            }
+
+            calculateYearsOfExistence() {
+                let currentYear = new Date().getFullYear()
+                let currentMonth = new Date().getMonth() + 1
+                let years = currentYear - this.foundationYear
+                if (currentMonth < this.foundationMonth) {
+                    years--
+                }
+                return years
+            }
+
+            addService(serviceName, cost, duration) {
+                let service = new Service(serviceName, cost, duration)
+                this.services.push(service)
+            }
+
+            addBranch(country, city, street, houseNumber) {
+                let address = new Address(country, city, street, houseNumber)
+                this.branches.push(address)
+            }
+
+            getBranchesInCity(city) {
+                return this.branches.filter(branch => branch.city === city)
+            }
+
+            getServicesByBudgetAndTime(maxCost, maxDuration) {
+                return this.services.filter(service => service.cost <= maxCost && service.duration <= maxDuration)
+            }
+
+            toString() {
+                return `Назва фірми: ${this.name}, Роки існування: ${this.calculateYearsOfExistence()}`
+            }
+        }
+
+        // Створення об'єкту фірми та додавання даних
+        let myFirm = new Firm("WTF", 2000, 5)
+
+            myFirm.addService("Веб-розробка", 800, 15)
+            myFirm.addService("Дизайн", 500, 10)
+            myFirm.addService("Консультація", 300, 5)
+
+            myFirm.addBranch("Україна", "Київ", "Перемоги", "1")
+            myFirm.addBranch("Україна", "Львів", "Пожежна", "5")
+            myFirm.addBranch("США", "Нью-Йорк", "WTF Street", "15")
+
+        // Виведення результатів на сторінку
+        document.write(`<h3>${myFirm.toString()}</h3>`)
+
+        let branchesInKyiv = myFirm.getBranchesInCity("Київ")
+        document.write("<h4>Філіали у місті Київ:</h4>")
+        branchesInKyiv.forEach(branch => {
+            document.write(`<h3>${branch.toString()}</h3>`)
+        })
+
+        let servicesByBudgetAndTime = myFirm.getServicesByBudgetAndTime(500, 20)
+        document.write("<h4>Послуги за бюджетом 500$, та часом < 20днів:</h4>")
+        servicesByBudgetAndTime.forEach(service => {
+            document.write(`<h3>${service.toString()}</h3>`)
+        })
+
+    </script>
+</body>
+</html>

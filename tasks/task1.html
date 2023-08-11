@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>task-1</title>
+</head>
+<body>
+    <h2>Створити клас TDate для роботи із датами у форматі “день.місяць.рік”. Дата представляється структурою із трьома полями.Реалізувати методи збільшення/зменшення дати на певну кількість днів, місяців чи років. Введення та виведення дати реалізувати за допомогою методу toString.</h2>
+
+    <script>
+
+        class TDate {
+            #day
+            #month
+            #year
+            constructor(day, month, year) {
+                this.Day = day
+                this.Month = month
+                this.Year = year
+            }
+
+            get Day() {
+                return this.#day
+            }
+            set Day(newValue) {
+                if (newValue > 31 || newValue < 1)
+                    throw new Error('Значення некоректне (має бути з 1 по 31).')
+                this.#day = newValue
+            }
+
+            get Month() {
+                return this.#month
+            }
+            set Month(newValue) {
+                if (newValue > 12 || newValue < 1)
+                    throw new Error('Значення некоректне (має бути з 1 по 12).')
+                this.#month = newValue
+            }
+
+            get Year() {
+                return this.#year
+            }
+            set Year(newValue) {
+                if (newValue < 1)
+                    throw new Error('Значення року має бути більше 0.')
+                this.#year = newValue
+            }
+
+            toString() {
+                const paddedDay = String(this.#day).padStart(2, '0')
+                const paddedMonth = String(this.#month).padStart(2, '0')
+                return `${paddedDay}.${paddedMonth}.${this.#year}`
+            }
+
+            addDays(days) {
+                const date = new Date(this.#year, this.#month - 1, this.#day)
+                date.setDate(date.getDate() + days)
+                this.#year = date.getFullYear()
+                this.#month = date.getMonth() + 1
+                this.#day = date.getDate()
+            }
+        }
+
+        let currentDate = new TDate(new Date().getDate(), new Date().getMonth() + 1, new Date().getFullYear())
+            document.write(`<h3> Поточна дата: ${currentDate} </h3>`)
+
+        let days = parseInt(prompt(`Введіть кількість днів які хочете додати.`))
+        currentDate.addDays(days)
+            document.write(`<h3> Нова дата після додавання ${days} днів: ${currentDate} </h3>`)
+
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+            // addDays(days) {
+            //     for (let i = 0; i < days; i++) {
+            //         this.#day++;
+                    
+            //         if (this.#day > this.daysInMonth(this.#month, this.#year)) {
+            //             this.#day = 1;
+            //             this.#month++;
+                        
+            //             if (this.#month > 12) {
+            //                 this.#month = 1;
+            //                 this.#year++;
+            //             }
+            //         }
+            //     }
+            // }
+            // daysInMonth(month, year) {
+            //     const daysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            //     if (this.isLeapYear(year) && month === 2) {
+            //         return 29;
+            //     }
+            //     return daysInMonths[month];
+            // }
+            // isLeapYear(year) {
+            //     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            // }
+//------------------------------------------------------------------------------------------------------------------
+        // //1. Вводимо даннi
+        // class TDate {
+        //     #day
+        //     #month
+        //     //#year
+        //     constructor(day, month, year) {
+        //         this.Day = day
+        //         this.Month = month
+        //         this.year = year
+        //         //this.Year = year
+        //     }
+        //     get Day() {
+        //         return this.#day
+        //     }
+        //     set Day(newValue) {
+        //         if (newValue > 31 || newValue < 1)
+        //             throw new Error('Значення некоректне(має бути з 1 по 31).')
+        //         this.#day = newValue
+        //     }
+        //     get Month() {
+        //         return this.#month
+        //     }
+        //     set Month(newValue) {
+        //         if (newValue > 12 || newValue < 1)
+        //             throw new Error('Значення некоректне(має бути з 1 по 12).')
+        //         this.#month = newValue
+        //     }
+        //     // // Додав геттер і сеттер для року
+        //     // get Year() {
+        //     //     return this.#year
+        //     // }
+        //     // set Year(newValue) {
+        //     //     if (newValue < 1)
+        //     //         throw new Error('Значення року має бути більше 0.')
+        //     //     this.#year = newValue
+        //     // }
+        //     // // Метод для збільшення/зменшення дати на певну кількість днів
+        //     // addDays(days) {
+        //     //     const date = new Date(this.#year, this.#month - 1, this.#day)
+        //     //     date.setDate(date.getDate() + days)
+        //     //     this.#year = date.getFullYear()
+        //     //     this.#month = date.getMonth() + 1
+        //     //     this.#day = date.getDate()
+        //     // }
+        //     toString() {
+        //         let paddedDay = String(this.#day).padStart(2, '0')
+        //         let paddedMonth = String(this.#month).padStart(2, '0')
+        //         return `${paddedDay}:${paddedMonth}:${this.year}`
+        //         // return `${this.Day} : ${this.Month} : ${this.year}`
+        //     }
+        // }
+        // //3. Виводимо результат
+        // let newDate = new TDate(9, 12, 2023)
+        // document.write(`<h3> Нова дата: ${newDate} </h3>`)
+//------------------------------------------------------------------------------------------------------------------
+    </script>
+</body>
+</html>

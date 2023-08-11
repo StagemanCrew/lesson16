@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>task-2</title>
+</head>
+<body>
+    <h2>Створити клас TMoney для роботи з грошовими сумами. Сума повинна зберігатися у вигляді доларового еквіваленту. Реалізувати методи додавання/вилучення грошової маси, вказуючи необхідну суму у гривнях, та визначення курсу долара, при якому сума у гривнях збільшиться на 100. Курс долара зберігати в окремому полі.</h2>
+
+    <script>
+
+        class TMoney {
+            #dollarBalance
+            #dollarRate
+            constructor(grnBalance, dollarRate) {
+                this.dollarRate = dollarRate
+                this.Balance = grnBalance
+            }
+
+            get dollarRate() {
+                return this.#dollarRate
+            }
+            set dollarRate(rate) {
+                if (rate <= 0) {
+                    throw new Error('Курс долара повинен бути більше за нуль!')
+                }
+                this.#dollarRate = rate
+            }
+
+            get Balance() {
+                return this.#dollarBalance * this.#dollarRate
+            }
+            set Balance(grnSum) {
+                if (grnSum < 0) {
+                    throw new Error('Помилка. Початкова сума не може бути меншою за нуль!')
+                }
+                this.#dollarBalance = grnSum / this.#dollarRate
+            }
+
+            addMoney(grnSum) {
+                if (grnSum < 0) {
+                    throw new Error('Сума поповнення має бути більшою за нуль!')
+                }
+                this.Balance += grnSum
+            }
+
+            takeMoney(grnSum) {
+                if (grnSum < 0) {
+                    throw new Error('Сума зняття має бути більшою за нуль!')
+                } else if (grnSum > this.Balance) {
+                    throw new Error('Недостатньо коштів на рахунку!')
+                }
+                this.Balance -= grnSum
+            }
+
+            getTarget100Rate() {
+                return (this.Balance + 100) / this.#dollarBalance
+            }
+
+            toString() {
+                return `Баланс: ${this.Balance.toFixed(2)} грн (${this.#dollarBalance.toFixed(2)} $ за ${this.#dollarRate} грн)`
+            }
+        }
+
+        let rate = 27.5
+        document.write(`<h2>Початковий курс: 1$ = ${rate}грн<br><h2>`)
+        let startingBalance = 2750
+
+        let money = new TMoney(startingBalance, rate)
+        document.write(`<h2>Початковий баланс: ${money.Balance}грн <br><h2>`)
+
+        money.addMoney(4125)
+        document.write(`<h2>Баланс після поповнення на 4125грн(150$): ${money.Balance}грн <br><h2>`)
+        money.takeMoney(1375)
+        document.write(`<h2>Баланс після зняття 1375грн(50$): ${money.Balance}грн <br><h2>`)
+        document.write(`<h3>Курс долара для досягнення балансу + 100грн: ${money.getTarget100Rate().toFixed(2)}<br><h2>`)
+
+        money.dollarRate = 28
+        document.write(`<p>${money.toString()}</p>`)
+
+    </script>
+</body>
+</html>

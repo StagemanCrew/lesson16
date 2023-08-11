@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>task-4</title>
+</head>
+<body>
+    <h3>Створити клас TBankomat, який моделює роботу банкомата. Клас повинен містити поля для зберігання кількості купюр кожного із номіналів від 5 до 200 гривень. Реалізувати методи знаходження максимальної та мінімальної сум, які може видати банкомат, та метод зняття деякої суми.</h3>
+
+    <script>
+
+        class TBankomat {
+            constructor() {
+                this.nominals = {
+                    200: 0,
+                    100: 0,
+                    50: 0,
+                    20: 0,
+                    10: 0,
+                    5: 0
+                };
+            }
+
+            loadMoney(nominal, amount) {
+                if (this.nominals.hasOwnProperty(nominal) && nominal % 5 === 0 && amount > 0) {
+                    this.nominals[nominal] += amount
+                }
+            }
+
+            withdraw(amount) {
+                if (amount % 5 !== 0) {
+                    return `Не вдається видати ${amount}грн. Введіть суму кратну 5!`
+                }
+
+                let remainingAmount = amount
+                let withdrawal = {}
+
+                let sortedNominals = Object.keys(this.nominals)
+                    .map(Number)
+                    .sort((a, b) => b - a)
+
+                for (let nominal of sortedNominals) {
+                    if (remainingAmount >= nominal && this.nominals[nominal] > 0) {
+                        let count = Math.min(
+                            Math.floor(remainingAmount / nominal),
+                            this.nominals[nominal]
+                        );
+                        withdrawal[nominal] = count
+                        remainingAmount -= count * nominal
+                    }
+                }
+
+                if (remainingAmount === 0) {
+                    for (let nominal in withdrawal) {
+                        this.nominals[nominal] -= withdrawal[nominal]
+                    }
+                    return withdrawal
+                } else {
+                    return `Не вдається видати ${amount} грн, бо максимальна можлива видача: ${this.maxPossibleWithdrawal()} грн.`
+                }
+            }
+
+            maxPossibleWithdrawal() {
+                return Object.keys(this.nominals).reduce((total, nominal) => {
+                    return total + nominal * this.nominals[nominal]
+                }, 0)
+            }
+
+            minPossibleWithdrawal() {
+                for (let nominal in this.nominals) {
+                    if (this.nominals[nominal] > 0) {
+                        return Number(nominal)
+                    }
+                }
+                return 0
+            }
+
+            toString() {
+                let output = "Наявність купюр у банкоматі:\n"
+                for (let nominal in this.nominals) {
+                    output += `${nominal} грн: ${this.nominals[nominal]} шт.\n`
+                }
+                return output
+            }
+        }
+
+        // Приклад використання класу TBankomat
+        let bankomat = new TBankomat()
+        bankomat.loadMoney(200, 10)
+        bankomat.loadMoney(100, 20)
+        bankomat.loadMoney(50, 30)
+        bankomat.loadMoney(20, 40)
+        bankomat.loadMoney(10, 50)
+        bankomat.loadMoney(5, 100)
+
+        // Виведення об'єкту на сторінці
+        document.write(`<pre>${bankomat}</pre>`)
+
+        document.write("<h3>Максимальна можлива видача:</h3>")
+        document.write(`<h2>${bankomat.maxPossibleWithdrawal()} грн</h2>`)
+
+        document.write("<h3>Мінімальна можлива видача:</h3>")
+        document.write(`<h2>${bankomat.minPossibleWithdrawal()} грн</h2>`)
+
+        let withdrawalAmount = parseInt(prompt('Введіть суму яку хочете зняти.'))
+        let withdrawalResult = bankomat.withdraw(withdrawalAmount)
+        if (typeof withdrawalResult === 'object') {
+            document.write("<h3>Видача успішна:</h3>")
+            for (let nominal in withdrawalResult) {
+                document.write(
+                    `<h2>${withdrawalResult[nominal]} x ${nominal} грн</h2>`
+                )
+            }
+        } else {
+            document.write(`<h2>${withdrawalResult}</h2>`)
+        }
+
+    </script>
+</body>
+</html>
+
+<!-- //====================================================================================================
+let bankomat = new TBankomat();
+bankomat.loadMoney(200, 10);
+bankomat.loadMoney(100, 20);
+bankomat.loadMoney(50, 30);
+bankomat.loadMoney(20, 40);
+bankomat.loadMoney(10, 50);
+bankomat.loadMoney(5, 100);
+
+document.write("<h3>Максимальна можлива видача:</h3>");
+document.write(`<h2>${bankomat.maxPossibleWithdrawal()} грн</h2>`);
+
+document.write("<h3>Мінімальна можлива видача:</h3>");
+document.write(`<h2>${bankomat.minPossibleWithdrawal()} грн</h2>`);
+
+let operation = confirm("Бажаєте зняти гроші? Якщо ні - натисніть \"Скасувати\", якщо так - \"OK\".");
+if (operation) {
+let withdrawalAmount = parseInt(prompt("Введіть суму яку хочете зняти."));
+let withdrawalResult = bankomat.withdraw(withdrawalAmount);
+if (withdrawalResult) {
+    document.write("<h3>Видача успішна:</h3>");
+    for (let nominal in withdrawalResult) {
+    document.write(
+        `<h2>${withdrawalResult[nominal]} x ${nominal} грн</h2>`
+    );
+    }
+} else {
+    document.write(`<h2>Не вдається видати ${withdrawalAmount} грн, бо максимальна можлива видача: ${bankomat.maxPossibleWithdrawal()} грн.</h2>`);
+}
+} else {
+let depositAmount = parseInt(prompt("Введіть суму, яку хочете покласти."));
+let nominal = parseInt(prompt("Введіть номінал грошей (5, 10, 20, 50, 100, 200)."));
+bankomat.loadMoney(nominal, depositAmount);
+document.write(`<h2>Гроші успішно додано. Залишок у банкоматі: ${bankomat.maxPossibleWithdrawal()} грн.</h2>`);
+}
+//==================================================================================================== -->
